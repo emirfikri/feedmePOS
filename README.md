@@ -143,7 +143,8 @@ Clean Architecture
 Widget & Unit Testing
 
 👨‍💻 Author
-
+```
 Emir Fikri
-Flutter Engineer
+Software Engineer
 Specialized in BLoC, Clean Architecture, CI/CD, and real-time systems.
+```
