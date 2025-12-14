@@ -61,6 +61,7 @@ lib/
  │
  └─ main.dart
 
+
 🧠 Key Design Decisions
 
 BLoC handles all business logic (orders, bots, timers)
@@ -96,6 +97,7 @@ test/
  │   └─ widget_test.dart
  ├─ repository_test.dart
  └─ bloc_test.dart
+
 
 🔄 Order Flow Logic
 
