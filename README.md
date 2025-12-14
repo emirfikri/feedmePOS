@@ -32,6 +32,7 @@ Unit & widget tests included
 
 This project follows Clean Architecture with clear separation of concerns.
 
+```
 lib/
  ├─ domain/
  │   ├─ entities/
@@ -60,6 +61,7 @@ lib/
  │       └─ bots_list.dart
  │
  └─ main.dart
+```
 
 
 🧠 Key Design Decisions
@@ -91,13 +93,14 @@ flutter test
 
 Test structure:
 
+```
 test/
  ├─ widgets/
  │   ├─ bots_list_test.dart
  │   └─ widget_test.dart
  ├─ repository_test.dart
  └─ bloc_test.dart
-
+```
 
 🔄 Order Flow Logic
 
