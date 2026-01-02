@@ -20,7 +20,16 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: BotsList(totalBots: 3, inProgress: inProgress)),
+        home: Scaffold(
+          body: BotsList(
+            inProgress: inProgress,
+            bots: [
+              Bots(id: 1, isFast: false),
+              Bots(id: 2, isFast: false),
+              Bots(id: 3, isFast: false),
+            ],
+          ),
+        ),
       ),
     );
 

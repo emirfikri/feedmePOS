@@ -61,11 +61,14 @@ class HomePage extends StatelessWidget {
                     builder: (_, __) {
                       return TabBarView(
                         children: [
-                          PendingList(pending: state.pending, bots: state.bots),
+                          PendingList(
+                            pending: state.pending,
+                            bots: state.bots.length,
+                          ),
                           InProgressList(inProgress: state.inProgress),
                           CompleteList(complete: state.complete),
                           BotsList(
-                            totalBots: state.bots,
+                            bots: state.bots,
                             inProgress: state.inProgress,
                           ),
                         ],
@@ -80,6 +83,12 @@ class HomePage extends StatelessWidget {
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            FloatingActionButton.extended(
+              heroTag: "addfastBot",
+              onPressed: () => bloc.add(AddFastBot()),
+              label: const Text("Add Fast Bot"),
+              icon: const Icon(Icons.add),
+            ),
             FloatingActionButton.extended(
               heroTag: "addBot",
               onPressed: () => bloc.add(AddBot()),

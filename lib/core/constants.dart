@@ -1,1 +1,2 @@
-const int processingSeconds = 10;
+const int processingSeconds = 11;
+const int fastProcessingSeconds = 6;

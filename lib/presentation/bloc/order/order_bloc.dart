@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/entities/order.dart';
-import '../../../domain/entities/in_progress.dart';
+import '../../../core/constants.dart' as Constants;
+import '../../../domain/entities/export_entities.dart';
 import 'order_event.dart';
 import 'order_state.dart';
 
@@ -15,6 +15,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<NewNormalOrder>(_onNewNormalOrder);
     on<NewVipOrder>(_onNewVipOrder);
     on<AddBot>(_onAddBot);
+    on<AddFastBot>(_onAddFastBot);
     on<RemoveBot>(_onRemoveBot);
     on<BotFinishedOrder>(_onBotFinished);
   }
@@ -56,7 +57,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   // ADD BOT
   // --------------------------------------------------------------------
   void _onAddBot(AddBot event, Emitter<OrderState> emit) {
-    emit(state.copyWith(bots: state.bots + 1));
+    final bot = Bots(id: _nextBotId, isFast: false);
+    emit(state.copyWith(bots: [...state.bots, bot]));
+    _nextBotId++;
+
+    _assignToBots(emit);
+  }
+
+  void _onAddFastBot(AddFastBot event, Emitter<OrderState> emit) {
+    final bot = Bots(id: _nextBotId, isFast: true);
+    emit(state.copyWith(bots: [...state.bots, bot]));
     _nextBotId++;
 
     _assignToBots(emit);
@@ -96,7 +106,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
     emit(
       state.copyWith(
-        bots: state.bots - 1,
+        bots: [...state.bots]..removeAt(state.bots.length - 1),
         pending: updatedPending,
         inProgress: updatedInProgress,
       ),
@@ -135,7 +145,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   // ASSIGN BOT ENGINE
   // --------------------------------------------------------------------
   void _assignToBots(Emitter<OrderState> emit) {
-    int idleBots = state.bots - state.inProgress.length;
+    int idleBots = state.bots.length - state.inProgress.length;
     if (idleBots <= 0) return;
     if (state.pending.isEmpty) return;
 
@@ -149,14 +159,25 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final order = pending.removeAt(0);
 
       final now = DateTime.now();
-      final finish = now.add(const Duration(seconds: 10));
 
+      final isFastBot = state.bots.firstWhere((b) => b.id == botId).isFast;
+      final finish = now.add(
+        Duration(
+          seconds: isFastBot
+              ? Constants.fastProcessingSeconds
+              : Constants.processingSeconds,
+        ),
+      );
       inProg.add(
         InProgress(botId: botId, order: order, startTime: now, endTime: finish),
       );
 
       _botTimers[botId] = Timer(
-        const Duration(seconds: 10),
+        Duration(
+          seconds: isFastBot
+              ? Constants.fastProcessingSeconds
+              : Constants.processingSeconds,
+        ),
         () => add(BotFinishedOrder(botId, order)),
       );
 

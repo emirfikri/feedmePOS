@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:mcd_bot/domain/entities/bots.dart';
 import '../../../../domain/entities/export_entities.dart';
 
 class BotsList extends StatelessWidget {
-  final int totalBots;
   final List<InProgress> inProgress;
+  final List<Bots> bots;
 
-  const BotsList({
-    super.key,
-    required this.totalBots,
-    required this.inProgress,
-  });
+  const BotsList({super.key, required this.inProgress, required this.bots});
 
   @override
   Widget build(BuildContext context) {
     final busyBotIds = inProgress.map((e) => e.botId).toSet();
 
     return ListView.builder(
-      itemCount: totalBots,
+      itemCount: bots.length,
       itemBuilder: (_, i) {
-        final botId = i + 1;
+        final botId = bots[i].id;
         final isBusy = busyBotIds.contains(botId);
-
+        final isFast = bots[i].isFast;
         final progress = isBusy
             ? inProgress.firstWhere((p) => p.botId == botId)
             : null;
@@ -55,10 +52,15 @@ class BotsList extends StatelessWidget {
             subtitle: isBusy
                 ? Text("Ends in: ${secondsLeft! < 0 ? 0 : secondsLeft}s")
                 : const Text("Idle"),
-            trailing: Icon(
-              isBusy ? Icons.precision_manufacturing : Icons.check_circle,
-              color: isBusy ? Colors.orange : Colors.green,
-              size: 30,
+            trailing: Column(
+              children: [
+                Text(isFast ? "Fast Bot" : "Normal Bot"),
+                Icon(
+                  isBusy ? Icons.precision_manufacturing : Icons.check_circle,
+                  color: isBusy ? Colors.orange : Colors.green,
+                  size: 30,
+                ),
+              ],
             ),
           ),
         );

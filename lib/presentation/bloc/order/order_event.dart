@@ -8,6 +8,8 @@ class NewVipOrder extends OrderEvent {}
 
 class AddBot extends OrderEvent {}
 
+class AddFastBot extends OrderEvent {}
+
 class RemoveBot extends OrderEvent {}
 
 class BotFinishedOrder extends OrderEvent {
